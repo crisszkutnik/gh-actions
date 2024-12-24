@@ -1,0 +1,47 @@
+name: Create tag
+
+on:
+  workflow_call:
+    inputs:
+      semver:
+        description: Which semver action to tag with (major | minor | patch)
+        required: true
+        type: string
+    secrets:
+      ACTIONS_PERSONAL_ACCESS_TOKEN:
+        required: true
+
+jobs:
+  tag:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Verify semver
+        run: |
+          VALID_VALUES=("major" "minor" "patch")
+          VALUE=${{ inputs.semver }}
+
+          for val in ${VALID_VALUES[@]}
+          do
+            if [ $VALUE = $val ]
+            then
+              echo Semver \'$VALUE\' is valid
+              exit 0
+            fi
+          done
+
+          OLD_IFS=$IFS
+          IFS=,
+          echo Semver \'$VALUE\' is not correct. Valid values are: "${VALID_VALUES[*]}"
+          IFS=$OLD_IFS
+          exit 1
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.ACTIONS_PERSONAL_ACCESS_TOKEN }}
+      - run: git config --global user.name "GitHub Actions bot"
+      - run: git config --global user.email "<>"
+      - run: git fetch --prune --unshallow --tags
+      - run: npm version ${{ inputs.semver }}
+      - run: git push --follow-tags
