@@ -39,6 +39,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
+          # A custom token has to be used so this workflow can trigger the create-release workflow
+          # see: https://github.com/orgs/community/discussions/27028#discussioncomment-3254360
           token: ${{ secrets.ACTIONS_PERSONAL_ACCESS_TOKEN }}
       - run: git config --global user.name "GitHub Actions bot"
       - run: git config --global user.email "<>"
