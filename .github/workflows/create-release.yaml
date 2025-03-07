@@ -68,6 +68,6 @@ jobs:
           platforms: linux/arm64,linux/amd64
           tags: ${{ inputs.REGISTRY }}/${{ inputs.IMAGE_NAME }}:${{ env.DOCKER_TAG }}
       - name: Create release
-        uses: ncipollo/release-action@v1.15.0
+        uses: ncipollo/release-action@v1.16.0
         with:
           generateReleaseNotes: true
