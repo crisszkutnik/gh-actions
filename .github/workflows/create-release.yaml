@@ -10,6 +10,9 @@ on:
       IMAGE_NAME:
         type: string
         required: true
+      IMAGE_VERSION:
+        type: string
+        required: false
       DIRECTORY:
         type: string
         required: false
@@ -33,8 +36,12 @@ jobs:
         run: cd ${{ inputs.DIRECTORY }}
       - name: Set DOCKER_TAG environment variable
         run: |
-          VERSION=${{ github.ref_name }}
-          echo "DOCKER_TAG=${VERSION#v}" >> $GITHUB_ENV
+          if [ -n "${{ inputs.IMAGE_VERSION }}" ]; then
+            echo "DOCKER_TAG=${{ inputs.IMAGE_VERSION }}" >> $GITHUB_ENV
+          else
+            VERSION=${{ github.ref_name }}
+            echo "DOCKER_TAG=${VERSION#v}" >> $GITHUB_ENV
+          fi
       - name: Set up buildx
         uses: docker/setup-buildx-action@v3
         with:
