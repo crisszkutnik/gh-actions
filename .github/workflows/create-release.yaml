@@ -61,7 +61,7 @@ jobs:
 
           echo "GIT_CONTEXT=${GIT_CONTEXT}" >> $GITHUB_ENV
       - name: Build and push
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: ${{ env.GIT_CONTEXT }}
           push: true
